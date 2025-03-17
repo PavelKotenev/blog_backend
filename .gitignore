@@ -1,0 +1,62 @@
+# Скомпилированные бинарники и выходные файлы
+bin/
+obj/
+*.dll
+*.pdb
+*.exe
+
+# Файлы сборки и кэша
+*.cache
+*.suo
+*.user
+*.sln.docstates
+
+# Папки и файлы Visual Studio
+.vs/
+.vscode/
+*.csproj.user
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rchitectures/
+
+# Логи и временные файлы
+*.log
+*.tmp
+
+# Зависимости NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# Файлы конфигурации с секретами
+appsettings.json
+appsettings.*.json
+*.config
+*.secrets.json
+
+# Папка для публикации
+publish/
+*.pubxml
+*.publishproj
+
+# Тестовые результаты
+TestResults/
+*.trx
+
+# Файлы среды разработки
+.env
+.env.local
+.env.*.local
+
+# MacOS файлы
+.DS_Store
+
+# Локальные базы данных (если используются)
+*.db
+*.sqlite
+
+# Rider (JetBrains) файлы
+.idea/
+*.iml

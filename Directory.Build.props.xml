@@ -1,0 +1,10 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- Параметры для всех проектов в решении -->
+    <PropertyGroup>
+        <!-- Путь к проекту миграций (Infrastructure) -->
+        <MigrationProject>$(SolutionDir)Blog.Infrastructure\Blog.Infrastructure.csproj</MigrationProject>
+
+        <!-- Путь к стартовому проекту (Presentation) -->
+        <StartupProject>$(SolutionDir)Blog.Presentation\Blog.Presentation.csproj</StartupProject>
+    </PropertyGroup>
+</Project>

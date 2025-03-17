@@ -1,0 +1,50 @@
+﻿{
+  "settings": {
+    "index": {
+      "max_ngram_diff": 8
+    },
+    "analysis": {
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 3,
+          "max_gram": 10
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "ngram_analyzer",
+        "search_analyzer": "ngram_analyzer",
+        "norms": false
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "ngram_analyzer",
+        "search_analyzer": "ngram_analyzer",
+        "norms": false
+      },
+      "created_at": {
+        "type": "date",
+        "format": "epoch_millis"
+      },
+      "tags": {
+        "type": "text",
+        "analyzer": "ngram_analyzer",
+        "search_analyzer": "ngram_analyzer",
+        "norms": false
+      }
+    }
+  }
+}
