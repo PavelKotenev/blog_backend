@@ -13,7 +13,8 @@ public class GetTagsForAdminTableQueryHandler(
         return await repository.GetTagsPickerTags(
             query.LastTagId,
             query.LastTagPopularity,
-            query.SelectedTagIds
+            query.SelectedTagIds,
+            cancellationToken
         );
     }
 }

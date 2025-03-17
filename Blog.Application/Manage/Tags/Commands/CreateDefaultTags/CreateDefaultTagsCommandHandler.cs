@@ -8,7 +8,7 @@ public class CreateDefaultTagsCommandHandler(ITagRepositories.IPostgresCommand r
 {
     public async Task<Unit> Handle(CreateDefaultTagsCommand command, CancellationToken cancellationToken)
     {
-        await repository.CreateDefaultTags();
+        await repository.CreateDefaultTags(cancellationToken);
         return Unit.Value;
     }
 }

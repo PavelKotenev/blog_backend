@@ -7,11 +7,11 @@ public interface ITagRepositories
 {
     public interface IPostgresCommand
     {
-        public Task CreateMvTagStatistics();
-        public Task Create(string title);
-        public Task CreateDefaultTags();
-        public Task Delete(int[] ids);
-        public Task RefreshMvTagStatistics();
+        public Task CreateMvTagStatistics(CancellationToken cancellationToken);
+        public Task Create(string title, CancellationToken cancellationToken);
+        public Task CreateDefaultTags(CancellationToken cancellationToken);
+        public Task Delete(int[] ids, CancellationToken cancellationToken);
+        public Task RefreshMvTagStatistics(CancellationToken cancellationToken);
     }
 
     public interface IPostgresQuery
@@ -19,7 +19,8 @@ public interface ITagRepositories
         public Task<GetTagsForPickerResponse> GetTagsPickerTags(
             int? lastTagId,
             int? lastTagPopularity,
-            int[] tagsSelectedViaPreviewPosts
+            int[] tagsSelectedViaPreviewPosts,
+            CancellationToken cancellationToken
         );
     }
 }

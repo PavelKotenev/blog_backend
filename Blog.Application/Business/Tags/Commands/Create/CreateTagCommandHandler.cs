@@ -9,7 +9,7 @@ public class CreateTagCommandHandler(
 {
     public async Task<Unit> Handle(CreateTagCommand command, CancellationToken cancellationToken)
     {
-        await repository.Create(command.Title);
+        await repository.Create(command.Title, cancellationToken);
         return Unit.Value;
     }
 }

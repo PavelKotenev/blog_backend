@@ -11,9 +11,9 @@ public class TransferPostsToElasticsearchCommandHandler(
 {
     public async Task<Unit> Handle(TransferPostsToElasticsearchCommand command, CancellationToken cancellationToken)
     {
-        var postsDocumentsDtos = await postgresRepository.GetPostDocumentsByIdRange(command.FromId, command.ToId);
+        var postsDocumentsDtos = await postgresRepository.GetPostDocumentsByIdRange(command.FromId, command.ToId, cancellationToken);
         var jsonBody = ElasticQueryBuilder.BuildBulkCreateQuery(postsDocumentsDtos);
-        await elasticRepository.BulkCreate(jsonBody);
+        await elasticRepository.BulkCreate(jsonBody, cancellationToken);
 
         return Unit.Value;
     }

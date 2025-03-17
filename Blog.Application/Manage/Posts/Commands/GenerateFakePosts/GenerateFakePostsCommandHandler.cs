@@ -11,7 +11,7 @@ namespace Blog.Application.Manage.Posts.Commands.GenerateFakePosts
         public async Task<Unit> Handle(GenerateFakePostsCommand command, CancellationToken cancellationToken)
         {
             var postsEntities = FakerService.CreateFakePosts(command.Quantity);
-            await repository.BulkCreate(postsEntities);
+            await repository.BulkCreate(postsEntities, cancellationToken);
             return Unit.Value;
         }
     }

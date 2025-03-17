@@ -5,99 +5,95 @@ namespace Blog.Infrastructure.Services;
 
 public class ElasticResponseMapper
 {
-    public static async Task<SearchAllCategoriesResponse> MapToSuggestions(HttpResponseMessage response)
+    public static async Task<SearchAllCategoriesResponse> MapToSuggestions(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken
+    )
     {
-        var json = await response.Content.ReadAsStringAsync();
+        var json = await response.Content.ReadAsStringAsync(cancellationToken);
         var doc = JsonDocument.Parse(json);
 
         try
         {
             var total = doc.RootElement.GetProperty("hits").GetProperty("total").GetProperty("value").GetInt32();
+
             var aggregations = doc.RootElement.GetProperty("aggregations").EnumerateObject()
-                .ToDictionary(
-                    agg => agg.Name,
-                    agg =>
-                    {
-                        var category = agg.Name;
-                        var totalCount = agg.Value.GetProperty("top_posts").GetProperty("hits")
-                            .GetProperty("total").GetProperty("value").GetInt32();
+                .Select(agg =>
+                {
+                    var category = agg.Name;
+                    var totalCount = agg.Value
+                        .GetProperty("top_posts")
+                        .GetProperty("hits")
+                        .GetProperty("total")
+                        .GetProperty("value")
+                        .GetInt32();
 
-                        var posts = agg.Value.GetProperty("top_posts").GetProperty("hits").GetProperty("hits")
-                            .EnumerateArray()
-                            .Select(hit =>
-                            {
-                                var source = hit.GetProperty("_source");
+                    var posts = ParsePreviewPosts(agg.Value.GetProperty("top_posts"), cancellationToken);
 
-                                var tagsString = source.GetProperty("tags").GetString() ?? string.Empty;
-                                var tagsList = MapToPreviewPostTags(tagsString);
-
-                                return new PreviewPost(
-                                    Id: source.GetProperty("id").GetInt64(),
-                                    Title: source.GetProperty("title").GetString() ?? string.Empty,
-                                    Content: source.GetProperty("content").GetString() ?? string.Empty,
-                                    Tags: tagsList,
-                                    CreatedAt: source.GetProperty("created_at").GetInt64()
-                                );
-                            })
-                            .ToList();
-
-                        return new PostsCategoryAggregation(category, totalCount, posts);
-                    });
+                    return new PostsCategoryAggregation(category, totalCount, posts);
+                })
+                .ToList();
 
             return new SearchAllCategoriesResponse(total, aggregations);
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException)
         {
-            return new SearchAllCategoriesResponse(0, new Dictionary<string, PostsCategoryAggregation>());
+            return new SearchAllCategoriesResponse(0, []);
         }
     }
 
-    public static async Task<GetPostsByCategoryResponse> MapToFilteredPosts(HttpResponseMessage response)
+
+    public static async Task<GetPostsByCategoryResponse> MapToFilteredPosts(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken
+    )
     {
-        var json = await response.Content.ReadAsStringAsync();
+        var json = await response.Content.ReadAsStringAsync(cancellationToken);
         var doc = JsonDocument.Parse(json);
 
-        var posts = doc.RootElement
-            .GetProperty("hits")
+        var posts = ParsePreviewPosts(doc.RootElement, cancellationToken);
+
+        return new GetPostsByCategoryResponse(posts);
+    }
+
+
+    private static List<PreviewPost> ParsePreviewPosts(
+        JsonElement rootElement,
+        CancellationToken cancellationToken
+    )
+    {
+        return rootElement.GetProperty("hits")
             .GetProperty("hits")
             .EnumerateArray()
             .Select(hit =>
             {
-                var source = hit.GetProperty("_source");
+                cancellationToken.ThrowIfCancellationRequested();
 
-                var tagsString = source.GetProperty("tags").GetString() ?? string.Empty;
-                var tagsList = MapToPreviewPostTags(tagsString);
+                var source = hit.GetProperty("_source");
 
                 return new PreviewPost(
                     Id: source.GetProperty("id").GetInt64(),
                     Title: source.GetProperty("title").GetString() ?? string.Empty,
                     Content: source.GetProperty("content").GetString() ?? string.Empty,
-                    Tags: tagsList,
+                    Tags: MapToPreviewPostTags(source.GetProperty("tags").GetString() ?? string.Empty),
                     CreatedAt: source.GetProperty("created_at").GetInt64()
                 );
             })
             .ToList();
-
-        return new GetPostsByCategoryResponse(posts);
     }
+
 
     private static List<PreviewPostTag> MapToPreviewPostTags(string tagsString)
     {
-        var tagsList = new List<PreviewPostTag>();
-
-        if (!string.IsNullOrEmpty(tagsString))
-        {
-            var tagPairs = tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var tagPair in tagPairs)
+        return tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(tagPair =>
             {
                 var parts = tagPair.Split("$$");
-                if (parts.Length == 2 && int.TryParse(parts[0], out var tagId))
-                {
-                    tagsList.Add(new PreviewPostTag(tagId, parts[1]));
-                }
-            }
-        }
-
-        return tagsList;
+                return parts.Length == 2 && int.TryParse(parts[0], out var tagId)
+                    ? new PreviewPostTag(tagId, parts[1])
+                    : null;
+            })
+            .Where(tag => tag != null)
+            .ToList()!;
     }
 }

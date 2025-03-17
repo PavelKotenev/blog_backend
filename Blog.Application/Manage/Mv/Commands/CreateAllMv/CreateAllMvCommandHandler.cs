@@ -3,11 +3,11 @@ using MediatR;
 
 namespace Blog.Application.Manage.Mv.Commands.CreateAllMv;
 
-public class CreateAllMvCommandHandler(ITagRepositories.IPostgresCommand repository):IRequestHandler<CreateAllMvCommand, string>
+public class CreateAllMvCommandHandler(ITagRepositories.IPostgresCommand repository):IRequestHandler<CreateAllMvCommand, Unit>
 {
-    public async Task<string> Handle(CreateAllMvCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateAllMvCommand request, CancellationToken cancellationToken)
     {
-        await repository.CreateMvTagStatistics();
-        return "all mv created";
+        await repository.CreateMvTagStatistics(cancellationToken);
+        return Unit.Value;
     }
 }

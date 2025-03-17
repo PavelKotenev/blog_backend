@@ -8,15 +8,37 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
 {
     private const string IndexName = "i_post";
 
-    public async Task<SearchAllCategoriesResponse> GetSuggestions(string elasticQuery)
+
+    public async Task<SearchAllCategoriesResponse> GetAllCategoriesPosts(
+        string elasticQuery,
+        CancellationToken cancellationToken
+    )
     {
-        var response = await elasticHttpClient.PostAsync($"{IndexName}/_search", elasticQuery);
-        return await ElasticResponseMapper.MapToSuggestions(response);
+        var response = await elasticHttpClient.PostAsync(
+            $"{IndexName}/_search",
+            elasticQuery,
+            cancellationToken
+        );
+        return await ElasticResponseMapper.MapToSuggestions(
+            response,
+            cancellationToken
+        );
     }
 
-    public async Task<GetPostsByCategoryResponse> GetPreviewPosts(string elasticQuery)
+
+    public async Task<GetPostsByCategoryResponse> GetCategoryPosts(
+        string elasticQuery,
+        CancellationToken cancellationToken
+    )
     {
-        var response = await elasticHttpClient.PostAsync($"{IndexName}/_search?filter_path=hits.hits", elasticQuery);
-        return await ElasticResponseMapper.MapToFilteredPosts(response);
+        var response = await elasticHttpClient.PostAsync(
+            $"{IndexName}/_search?filter_path=hits.hits",
+            elasticQuery,
+            cancellationToken
+        );
+        return await ElasticResponseMapper.MapToFilteredPosts(
+            response,
+            cancellationToken
+        );
     }
 }

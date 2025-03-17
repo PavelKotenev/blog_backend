@@ -9,16 +9,17 @@ public class GetAllCategoriesPostsQueryHandler(
     IPostRepositories.IElasticQuery queryRepository
 ) : IRequestHandler<GetAllCategoriesPostsQuery, SearchAllCategoriesResponse>
 {
-    public async Task<SearchAllCategoriesResponse> Handle(GetAllCategoriesPostsQuery query,
-        CancellationToken cancellationToken)
+    public async Task<SearchAllCategoriesResponse> Handle(
+        GetAllCategoriesPostsQuery query,
+        CancellationToken cancellationToken
+        )
     {
-        var elasticQuery = ElasticQueryBuilder.BuildSuggestionsQuery(
+        var elasticQuery = ElasticQueryBuilder.BuildPostsAggregationsQuery(
             query.SearchTerm,
             query.FromCreatedAt,
             query.ToCreatedAt,
             query.SelectedTags
             );
-        Console.WriteLine(elasticQuery);
-        return await queryRepository.GetSuggestions(elasticQuery);
+        return await queryRepository.GetAllCategoriesPosts(elasticQuery, cancellationToken);
     }
 }

@@ -2,16 +2,16 @@
 
 namespace Blog.Infrastructure.Services;
 
-public static class QueryStringAnalyzer
+public static partial class QueryStringAnalyzer
 {
     public static bool IsSearchByIdAvailable(string queryString)
     {
-        return Regex.IsMatch(queryString, "\\d+");
+        return IsSearchByIdAvailableRegex().IsMatch(queryString);
     }
 
     public static List<int> ExtractIds(string queryString)
     {
-        return Regex.Matches(queryString, "\\d+")
+        return ExtractIdsRegex().Matches(queryString)
             .Select(m => int.Parse(m.Value))
             .OrderBy(n => n)
             .ToList();
@@ -33,4 +33,10 @@ public static class QueryStringAnalyzer
         return Regex.IsMatch(queryString,
             @"^([a-zA-Z]{3,}|([a-zA-Z]{2}\s[a-zA-Z]{1}|\s[a-zA-Z]{2}[a-zA-Z]{1})|#|\d.*)$");
     }
+
+    [GeneratedRegex("\\d+")]
+    private static partial Regex IsSearchByIdAvailableRegex();
+
+    [GeneratedRegex("\\d+")]
+    private static partial Regex ExtractIdsRegex();
 }

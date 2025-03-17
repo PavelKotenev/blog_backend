@@ -7,7 +7,7 @@ namespace Blog.Infrastructure.Repositories.Posts.Queries;
 
 public class PostgresPostQueryRepository(PostgresContext context) : IPostRepositories.IPostgresQuery
 {
-    public async Task<List<PostDocumentDto>> GetLastPostDocument()
+    public async Task<List<PostDocumentDto>> GetLastPostDocument(CancellationToken cancellationToken)
     {
         const string query = """
                              SELECT
@@ -31,12 +31,12 @@ public class PostgresPostQueryRepository(PostgresContext context) : IPostReposit
 
         var result = await context.Database
             .SqlQueryRaw<PostDocumentDto>(query)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return result;
     }
     
-    public async Task<List<PostDocumentDto>> GetPostDocumentsByIdRange(int fromId, int toId)
+    public async Task<List<PostDocumentDto>> GetPostDocumentsByIdRange(int fromId, int toId, CancellationToken cancellationToken)
     {
         const string query = """
                              SELECT
@@ -63,7 +63,7 @@ public class PostgresPostQueryRepository(PostgresContext context) : IPostReposit
 
         var result = await context.Database
             .SqlQueryRaw<PostDocumentDto>(query, fromId, toId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return result;
     }

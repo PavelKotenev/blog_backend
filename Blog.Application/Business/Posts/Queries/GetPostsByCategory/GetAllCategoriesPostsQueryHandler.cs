@@ -5,12 +5,14 @@ using MediatR;
 
 namespace Blog.Application.Business.Posts.Queries.GetPostsByCategory;
 
-public class GetAllCategoriesPostsQueryHandler(
+public class GetPostsByCategoryQueryHandler(
     IPostRepositories.IElasticQuery repository
 ) : IRequestHandler<GetPostsByCategoryQuery, GetPostsByCategoryResponse>
 {
-    public async Task<GetPostsByCategoryResponse> Handle(GetPostsByCategoryQuery query,
-        CancellationToken cancellationToken)
+    public async Task<GetPostsByCategoryResponse> Handle(
+        GetPostsByCategoryQuery query,
+        CancellationToken cancellationToken
+    )
     {
         var elasticQuery = ElasticQueryBuilder
             .BuildFilteredPostsQuery(
@@ -22,6 +24,10 @@ public class GetAllCategoriesPostsQueryHandler(
                 query.LastPostCreatedAt,
                 query.SelectedTags
             );
-        return await repository.GetPreviewPosts(elasticQuery);
+        Console.WriteLine(elasticQuery);
+        return await repository.GetCategoryPosts(
+            elasticQuery,
+            cancellationToken
+        );
     }
 }

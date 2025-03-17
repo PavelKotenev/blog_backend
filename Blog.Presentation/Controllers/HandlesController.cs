@@ -15,64 +15,68 @@ namespace Blog.Presentation.Controllers;
 public class HandlesController(IMediator mediator) : ControllerBase
 {
     [HttpGet("transfer_posts_to_elastic")]
-    public async Task<ActionResult<string>> TransferPostsToElasticAsync
+    public async Task<ActionResult<Unit>> TransferPostsToElasticAsync
     (
         [FromQuery] int fromId,
-        [FromQuery] int toId
-    )
-    {
+        [FromQuery] int toId,
+        CancellationToken cancellationToken
+    ) {
         var command = new TransferPostsToElasticsearchCommand(fromId, toId);
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
+
 
     [HttpGet("generate_fake_posts")]
-    public async Task<ActionResult<string>> GenerateFakePostsAsync
+    public async Task<ActionResult<Unit>> GenerateFakePostsAsync
     (
-        [FromQuery] int quantity
-    )
-    {
+        [FromQuery] int quantity,
+        CancellationToken cancellationToken
+    ) {
         var command = new GenerateFakePostsCommand(quantity);
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
+
 
     [HttpGet("create_post_index")]
-    public async Task<ActionResult<string>> CreatePostIndexAsync()
-    {
+    public async Task<ActionResult<Unit>> CreatePostIndexAsync(
+        CancellationToken cancellationToken
+    ) {
         var command = new CreatePostIndexCommand();
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
+
 
     [HttpGet("delete_post_index")]
-    public async Task<ActionResult<string>> DeleteIndexInfoAsync()
-    {
+    public async Task<ActionResult<Unit>> DeleteIndexInfoAsync(
+        CancellationToken cancellationToken
+    ) {
         var command = new DeletePostIndexCommand();
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
 
+
     [HttpGet("create_default_tags")]
-    public async Task<ActionResult<string>> CreateDefaultTagsAsync()
-    {
+    public async Task<ActionResult<Unit>> CreateDefaultTagsAsync(
+        CancellationToken cancellationToken
+    ) {
         var command = new CreateDefaultTagsCommand();
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
-    
+
+
     [HttpGet("refresh_all_mv")]
-    public async Task<ActionResult<string>> RefreshAllMv()
-    {
+    public async Task<ActionResult<Unit>> RefreshAllMv(
+        CancellationToken cancellationToken) {
         var command = new RefreshAllMvCommand();
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
+
+
     [HttpGet("create_all_mv")]
-    public async Task<ActionResult<string>> CreateAllMv()
-    {
+    public async Task<ActionResult<Unit>> CreateAllMv(
+        CancellationToken cancellationToken
+    ) {
         var command = new CreateAllMvCommand();
-        var response = await mediator.Send(command);
-        return Ok(response);
+        return await mediator.Send(command, cancellationToken);
     }
 }

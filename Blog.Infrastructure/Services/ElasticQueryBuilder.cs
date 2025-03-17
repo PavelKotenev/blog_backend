@@ -173,7 +173,7 @@ public static class ElasticQueryBuilder
     }
 
 
-    public static string BuildSuggestionsQuery(
+    public static string BuildPostsAggregationsQuery(
         string queryTerm,
         long? fromCreatedAt,
         long? toCreatedAt,

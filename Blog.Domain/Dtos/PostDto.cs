@@ -1,10 +1,12 @@
-﻿namespace Blog.Domain.DTOs;
+﻿using Blog.Domain.Enums;
+
+namespace Blog.Domain.DTOs;
 
 public class PostDto
 {
     public int? Id { get; set; }
     public int AuthorId { get; set; }
-    public required int Status { get; set; }
+    public required ActivityStatus Status { get; set; }
     public required string Title { get; set; }
     public required string Content { get; set; }
     public string? Tags { get; set; }
@@ -16,7 +18,7 @@ public class PostDto
 
     public PostDto(
         int authorId,
-        int status,
+        ActivityStatus status,
         string title,
         string content,
         string tags
@@ -32,7 +34,7 @@ public class PostDto
     public PostDto(
         int id,
         int authorId,
-        int status,
+        ActivityStatus status,
         string title,
         string content,
         string tags,

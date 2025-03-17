@@ -1,14 +1,16 @@
-﻿namespace Blog.Domain.Entities;
+﻿using Blog.Domain.Enums;
+
+namespace Blog.Domain.Entities;
 
 public class Post
 {
     public int Id { get; private set; }
-    public int AuthorId { get; set; }
-    public int Status { get; set; }
-    public string Title { get; set; }
-    public string Content { get; set; }
-    public string? Tags { get; set; }
-    public long CreatedAt { get; set; }
+    public int AuthorId { get; init; }
+    public ActivityStatus Status { get; init; }
+    public string Title { get; init; }
+    public string Content { get; init; }
+    public string? Tags { get; init; }
+    public long CreatedAt { get; init; }
 
     public Post(string title, string content)
     {
@@ -16,7 +18,7 @@ public class Post
         Content = content;
     }
 
-    public Post(int authorId, int status, string title, string content, string? tags)
+    public Post(int authorId, ActivityStatus status, string title, string content, string? tags)
     {
         AuthorId = authorId;
         Status = status;
@@ -25,7 +27,7 @@ public class Post
         Tags = tags;
     }
 
-    public Post(int id, int authorId, int status, string title, string content, string? tags,
+    public Post(int id, int authorId, ActivityStatus status, string title, string content, string? tags,
         long createdAt)
     {
         Id = id;

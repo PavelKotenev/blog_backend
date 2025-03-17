@@ -5,7 +5,7 @@ namespace Blog.Domain.Responses;
 public record SearchAllCategoriesResponse(
     [property: JsonPropertyName("total")] int Total,
     [property: JsonPropertyName("aggregations")]
-    Dictionary<string, PostsCategoryAggregation> Aggregations
+    List<PostsCategoryAggregation> Aggregations
 );
 
 public record PostsCategoryAggregation(

@@ -1,11 +1,14 @@
 using Blog.Application;
 using Blog.Infrastructure;
+using Blog.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
+builder.Services.AddHttpClient<ElasticHttpClient>();
+builder.Services.AddLogging();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationMarker).Assembly));
 builder.Services.AddOpenApi();

@@ -11,27 +11,30 @@ namespace Blog.Presentation.Controllers;
 [Route("api/client")]
 public class ClientController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("get_all_categories_posts")]
+    [HttpPost("categories")]
     public async Task<ActionResult<SearchAllCategoriesResponse>> GetAllCategoriesPosts(
-        [FromBody] GetAllCategoriesPostsQuery query)
+        [FromBody] GetAllCategoriesPostsQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        var response = await mediator.Send(query);
-        return Ok(response);
+        return await mediator.Send(query, cancellationToken);
     }
 
-    [HttpPost("get_posts_by_category")]
+    [HttpPost("category")]
     public async Task<ActionResult<GetPostsByCategoryResponse>> GetPostsByCategory(
-        [FromBody] GetPostsByCategoryQuery byCategoryQuery)
+        [FromBody] GetPostsByCategoryQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        var response = await mediator.Send(byCategoryQuery);
-        return Ok(response);
+        return await mediator.Send(query, cancellationToken);
     }
 
-    [HttpPost("get_tags_for_picker")]
+    [HttpPost("picker/tags")]
     public async Task<ActionResult<GetTagsForPickerResponse>> GetTagsForPicker(
-        [FromBody] GetTagsForPickerQuery query)
+        [FromBody] GetTagsForPickerQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        var response = await mediator.Send(query);
-        return Ok(response);
+        return await mediator.Send(query, cancellationToken);
     }
 }

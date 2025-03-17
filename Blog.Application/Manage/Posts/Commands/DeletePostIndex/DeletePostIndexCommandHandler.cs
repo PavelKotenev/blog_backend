@@ -8,7 +8,7 @@ public class DeletePostIndexCommandHandler(IPostRepositories.IElasticCommand rep
 {
     public async Task<Unit> Handle(DeletePostIndexCommand command, CancellationToken cancellationToken)
     {
-        await repository.DeleteIndex();
+        await repository.DeleteIndex(cancellationToken);
         return Unit.Value;
     }
 }

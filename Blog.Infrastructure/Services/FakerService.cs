@@ -7,36 +7,30 @@ namespace Blog.Infrastructure.Services;
 
 public class FakerService
 {
+    private static readonly Random Random = new();
+
     public static List<PostDto> CreateFakePosts(int count)
     {
         var faker = new Faker<PostDto>("en")
             .RuleFor(p => p.AuthorId, f => 1)
             .RuleFor(p => p.Title, f => f.Lorem.Sentence())
             .RuleFor(p => p.Content, f => f.Lorem.Paragraphs(1))
-            .RuleFor(p => p.Status, f => (int)ActivityStatus.Active)
+            .RuleFor(p => p.Status, f => ActivityStatus.Active)
             .RuleFor(p => p.Tags, f => GenerateRandomTagsJson())
             .RuleFor(p => p.CreatedAt, f => GenerateRandomEpochTime());
 
-        var fakePosts = new List<PostDto>();
-
-        for (var i = 0; i < count; i++)
-        {
-            fakePosts.Add(faker.Generate());
-        }
-
-        return fakePosts;
+        return Enumerable.Range(0, count)
+            .Select(_ => faker.Generate())
+            .ToList();
     }
 
     private static string GenerateRandomTagsJson()
     {
-        var random = new Random();
-        var tagCount = random.Next(1, 6);
         var tagIds = new HashSet<int>();
 
-        while (tagIds.Count < tagCount)
+        while (tagIds.Count < Random.Next(1, 6))
         {
-            var tagId = random.Next(1, 6);
-            tagIds.Add(tagId);
+            tagIds.Add(Random.Next(1, 6));
         }
 
         return JsonSerializer.Serialize(tagIds);
@@ -44,19 +38,12 @@ public class FakerService
 
     private static long GenerateRandomEpochTime()
     {
-        var random = new Random();
         var startDate = DateTime.UtcNow.AddMonths(-1);
         var endDate = DateTime.UtcNow;
 
-        var daysRange = (endDate - startDate).Days;
-        var randomDays = random.Next(0, daysRange);
+        var totalMilliseconds = (endDate - startDate).TotalMilliseconds;
+        var randomMilliseconds = Random.NextInt64(0, (long)totalMilliseconds);
 
-        var randomDate = startDate.AddDays(randomDays);
-        
-        randomDate = randomDate.AddHours(random.Next(0, 24));
-        randomDate = randomDate.AddMinutes(random.Next(0, 60));
-        randomDate = randomDate.AddSeconds(random.Next(0, 60));
-
-        return ((DateTimeOffset)randomDate).ToUnixTimeMilliseconds();
+        return ((DateTimeOffset)startDate.AddMilliseconds(randomMilliseconds)).ToUnixTimeMilliseconds();
     }
 }

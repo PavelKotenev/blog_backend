@@ -2,37 +2,36 @@
 
 namespace Blog.Infrastructure.Services;
 
-public class ElasticHttpClient
+public class ElasticHttpClient(HttpClient httpClient)
 {
-    private const string EsHostPort = "http://localhost:9200";
-    private readonly HttpClient _http = new();
+    private const string BaseUrl = "http://localhost:9200";
 
-    public async Task<HttpResponseMessage> GetAsync(string endpoint)
+    public async Task<HttpResponseMessage> GetAsync(string endpoint, CancellationToken cancellationToken)
     {
-        var response = await _http.GetAsync($"{EsHostPort}/{endpoint}");
+        var response = await httpClient.GetAsync($"{BaseUrl}/{endpoint}", cancellationToken);
         response.EnsureSuccessStatusCode();
         return response;
     }
 
-    public async Task<HttpResponseMessage> PostAsync(string endpoint, string jsonBody)
+    public async Task<HttpResponseMessage> PostAsync(string endpoint, string jsonBody, CancellationToken cancellationToken)
     {
         var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-        var response = await _http.PostAsync($"{EsHostPort}/{endpoint}", content);
+        var response = await httpClient.PostAsync($"{BaseUrl}/{endpoint}", content, cancellationToken);
         response.EnsureSuccessStatusCode();
         return response;
     }
 
-    public async Task<HttpResponseMessage> PutAsync(string endpoint, string jsonBody)
+    public async Task<HttpResponseMessage> PutAsync(string endpoint, string jsonBody, CancellationToken cancellationToken)
     {
         var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-        var response = await _http.PutAsync($"{EsHostPort}/{endpoint}", content);
+        var response = await httpClient.PutAsync($"{BaseUrl}/{endpoint}", content, cancellationToken);
         response.EnsureSuccessStatusCode();
         return response;
     }
 
-    public async Task<HttpResponseMessage> DeleteAsync(string endpoint)
+    public async Task<HttpResponseMessage> DeleteAsync(string endpoint, CancellationToken cancellationToken)
     {
-        var response = await _http.DeleteAsync($"{EsHostPort}/{endpoint}");
+        var response = await httpClient.DeleteAsync($"{BaseUrl}/{endpoint}", cancellationToken);
         response.EnsureSuccessStatusCode();
         return response;
     }
