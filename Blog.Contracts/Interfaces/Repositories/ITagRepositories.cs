@@ -14,7 +14,8 @@ public interface ITagRepositories
 
     public interface IPostgresQuery
     {
-        public Task<GetTagsForPickerResponse> GetTagsPickerTags(
+        public Task<GetTagsForPickerResponse> GetTagsForPicker(
+            string? searchTerm,
             int? lastTagId,
             int? lastTagPopularity,
             int[]? tagsSelectedViaPreviewPosts,

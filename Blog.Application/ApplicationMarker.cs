@@ -1,6 +1,6 @@
 namespace Blog.Application;
 
-public static class ApplicationMarker
+public class ApplicationMarker
 {
     
 }

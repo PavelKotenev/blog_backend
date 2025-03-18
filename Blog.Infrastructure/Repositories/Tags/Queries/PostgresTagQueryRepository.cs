@@ -8,7 +8,8 @@ namespace Blog.Infrastructure.Repositories.Tags.Queries;
 
 public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositories.IPostgresQuery
 {
-    public async Task<GetTagsForPickerResponse> GetTagsPickerTags(
+    public async Task<GetTagsForPickerResponse> GetTagsForPicker(
+        string? searchTerm,
         int? lastTagId,
         int? lastTagPopularity,
         int[] selectedTagIds,

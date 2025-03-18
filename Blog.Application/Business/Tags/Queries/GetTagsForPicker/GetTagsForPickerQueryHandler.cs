@@ -10,7 +10,8 @@ public class GetTagsForAdminTableQueryHandler(
 {
     public async Task<GetTagsForPickerResponse> Handle(GetTagsForPickerQuery query, CancellationToken cancellationToken)
     {
-        return await repository.GetTagsPickerTags(
+        return await repository.GetTagsForPicker(
+            query.SearchTerm,
             query.LastTagId,
             query.LastTagPopularity,
             query.SelectedTagIds,
