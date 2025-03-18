@@ -56,7 +56,6 @@ namespace Blog.Infrastructure
                 entity.HasKey(u => u.Guid);
                 entity.Property(u => u.Guid).HasColumnName("guid");
                 entity.Property(u => u.UserName).HasColumnName("name").HasMaxLength(256).IsRequired();
-                entity.Property(u => u.UserHandle).HasColumnName("handle").HasMaxLength(256);
                 entity.Property(u => u.NormalizedUserName).HasColumnName("normalized_user_name").HasMaxLength(256)
                     .IsRequired(false);
                 entity.Property(u => u.Email).HasColumnName("email").HasMaxLength(256).IsRequired();
