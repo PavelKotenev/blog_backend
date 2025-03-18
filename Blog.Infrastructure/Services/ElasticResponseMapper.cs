@@ -5,7 +5,7 @@ namespace Blog.Infrastructure.Services;
 
 public class ElasticResponseMapper
 {
-    public static async Task<GetAllCategoriesPostsResponse> MapToSuggestions(
+    public static async Task<GetAllCategoriesPostsResponse> MapToAllCatgoriesPostsResponse(
         HttpResponseMessage response,
         CancellationToken cancellationToken
     )
@@ -43,7 +43,7 @@ public class ElasticResponseMapper
     }
 
 
-    public static async Task<GetPostsByCategoryResponse> MapToFilteredPosts(
+    public static async Task<GetPostsByCategoryResponse> MapToPostsByCategoryResponse(
         HttpResponseMessage response,
         CancellationToken cancellationToken
     )

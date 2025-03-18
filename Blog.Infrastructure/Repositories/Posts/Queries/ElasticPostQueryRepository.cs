@@ -19,7 +19,7 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
             elasticQuery,
             cancellationToken
         );
-        return await ElasticResponseMapper.MapToSuggestions(
+        return await ElasticResponseMapper.MapToAllCatgoriesPostsResponse(
             response,
             cancellationToken
         );
@@ -36,7 +36,7 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
             elasticQuery,
             cancellationToken
         );
-        return await ElasticResponseMapper.MapToFilteredPosts(
+        return await ElasticResponseMapper.MapToPostsByCategoryResponse(
             response,
             cancellationToken
         );

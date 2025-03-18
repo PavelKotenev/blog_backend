@@ -1,0 +1,31 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Run unit tests
+        run: dotnet test Blog.Tests/Blog.Tests.csproj --logger "trx;LogFileName=unit-tests.trx"
+      - name: Run integration tests
+        run: |
+          docker-compose -f docker-compose.test.yml up -d
+          dotnet test Blog.IntegrationTests/Blog.IntegrationTests.csproj --logger "trx;LogFileName=integration-tests.trx"
+          docker-compose -f docker-compose.test.yml down
