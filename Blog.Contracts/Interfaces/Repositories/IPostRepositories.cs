@@ -1,8 +1,7 @@
-﻿using Blog.Domain.DTOs;
-using Blog.Domain.Entities;
-using Blog.Domain.Responses;
+﻿using Blog.Contracts.Responses;
+using Blog.Domain.DTOs;
 
-namespace Blog.Domain.Interfaces.Repositories;
+namespace Blog.Contracts.Interfaces.Repositories;
 
 public interface IPostRepositories
 {
@@ -24,7 +23,7 @@ public interface IPostRepositories
 
     public interface IElasticQuery
     {
-        public Task<SearchAllCategoriesResponse> GetAllCategoriesPosts(
+        public Task<GetAllCategoriesPostsResponse> GetAllCategoriesPosts(
             string elasticQuery,
             CancellationToken cancellationToken
         );

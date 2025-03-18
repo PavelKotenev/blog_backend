@@ -1,6 +1,6 @@
-using Blog.Domain.Interfaces.Repositories;
+using Blog.Contracts.Interfaces.Repositories;
 using Blog.Domain.MaterializedView;
-using Blog.Domain.Responses;
+using Blog.Contracts.Responses;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 

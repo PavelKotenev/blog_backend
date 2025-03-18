@@ -1,4 +1,4 @@
-﻿using Blog.Domain.Interfaces.Repositories;
+﻿using Blog.Contracts.Interfaces.Repositories;
 using Blog.Infrastructure.Repositories.Posts.Commands;
 using Blog.Infrastructure.Repositories.Posts.Queries;
 using Blog.Infrastructure.Repositories.Tags.Commands;

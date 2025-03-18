@@ -1,4 +1,4 @@
-﻿using Blog.Domain.Interfaces.Repositories;
+﻿using Blog.Contracts.Interfaces.Repositories;
 using MediatR;
 
 namespace Blog.Application.Manage.Tags.Commands.CreateDefaultTags;

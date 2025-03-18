@@ -1,5 +1,5 @@
-﻿using Blog.Domain.Interfaces.Repositories;
-using Blog.Domain.Responses;
+﻿using Blog.Contracts.Interfaces.Repositories;
+using Blog.Contracts.Responses;
 using Blog.Infrastructure.Services;
 using MediatR;
 
@@ -7,9 +7,9 @@ namespace Blog.Application.Business.Posts.Queries.GetAllCategoriesPosts;
 
 public class GetAllCategoriesPostsQueryHandler(
     IPostRepositories.IElasticQuery queryRepository
-) : IRequestHandler<GetAllCategoriesPostsQuery, SearchAllCategoriesResponse>
+) : IRequestHandler<GetAllCategoriesPostsQuery, GetAllCategoriesPostsResponse>
 {
-    public async Task<SearchAllCategoriesResponse> Handle(
+    public async Task<GetAllCategoriesPostsResponse> Handle(
         GetAllCategoriesPostsQuery query,
         CancellationToken cancellationToken
         )

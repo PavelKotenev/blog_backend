@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
-using Blog.Domain.Responses;
+using Blog.Contracts.Responses;
 
 namespace Blog.Infrastructure.Services;
 
 public class ElasticResponseMapper
 {
-    public static async Task<SearchAllCategoriesResponse> MapToSuggestions(
+    public static async Task<GetAllCategoriesPostsResponse> MapToSuggestions(
         HttpResponseMessage response,
         CancellationToken cancellationToken
     )
@@ -34,11 +34,11 @@ public class ElasticResponseMapper
                 })
                 .ToList();
 
-            return new SearchAllCategoriesResponse(total, aggregations);
+            return new GetAllCategoriesPostsResponse(total, aggregations);
         }
         catch (KeyNotFoundException)
         {
-            return new SearchAllCategoriesResponse(0, []);
+            return new GetAllCategoriesPostsResponse(0, []);
         }
     }
 

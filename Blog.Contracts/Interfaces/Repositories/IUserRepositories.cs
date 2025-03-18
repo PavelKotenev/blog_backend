@@ -1,7 +1,6 @@
 ﻿using Blog.Domain.Entities;
 
-namespace Blog.Domain.Interfaces.Repositories;
-
+namespace Blog.Contracts.Interfaces.Repositories;
 public interface IUserRepositories
 {
     public interface IPostgresCommand

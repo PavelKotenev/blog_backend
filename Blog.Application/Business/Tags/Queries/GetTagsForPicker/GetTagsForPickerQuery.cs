@@ -1,4 +1,4 @@
-using Blog.Domain.Responses;
+using Blog.Contracts.Responses;
 using MediatR;
 
 namespace Blog.Application.Business.Tags.Queries.GetTagsForPicker;

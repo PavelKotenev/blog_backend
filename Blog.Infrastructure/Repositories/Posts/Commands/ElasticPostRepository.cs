@@ -1,4 +1,4 @@
-﻿using Blog.Domain.Interfaces.Repositories;
+﻿using Blog.Contracts.Interfaces.Repositories;
 using Blog.Infrastructure.Services;
 
 namespace Blog.Infrastructure.Repositories.Posts.Commands;

@@ -1,4 +1,4 @@
-﻿using Blog.Domain.Interfaces.Repositories;
+﻿using Blog.Contracts.Interfaces.Repositories;
 using Blog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Blog.Domain.Responses;
+using Blog.Contracts.Responses;
 using MediatR;
 
 namespace Blog.Application.Business.Posts.Queries.GetPostsByCategory;

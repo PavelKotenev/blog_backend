@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Blog.Domain.DTOs;
 
-namespace Blog.Domain.Responses;
+namespace Blog.Contracts.Responses;
 
 public record GetPostsByCategoryResponse(
     [property: JsonPropertyName("postsByCategory")]

@@ -1,5 +1,5 @@
-using Blog.Domain.Interfaces.Repositories;
-using Blog.Domain.Responses;
+using Blog.Contracts.Interfaces.Repositories;
+using Blog.Contracts.Responses;
 using MediatR;
 
 namespace Blog.Application.Business.Tags.Queries.GetTagsForPicker;

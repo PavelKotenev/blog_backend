@@ -1,5 +1,5 @@
-﻿using Blog.Domain.Interfaces.Repositories;
-using Blog.Domain.Responses;
+﻿using Blog.Contracts.Interfaces.Repositories;
+using Blog.Contracts.Responses;
 using Blog.Infrastructure.Services;
 
 namespace Blog.Infrastructure.Repositories.Posts.Queries;
@@ -9,7 +9,7 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
     private const string IndexName = "i_post";
 
 
-    public async Task<SearchAllCategoriesResponse> GetAllCategoriesPosts(
+    public async Task<GetAllCategoriesPostsResponse> GetAllCategoriesPosts(
         string elasticQuery,
         CancellationToken cancellationToken
     )

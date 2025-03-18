@@ -1,7 +1,7 @@
 ﻿using Blog.Application.Business.Posts.Queries.GetAllCategoriesPosts;
 using Blog.Application.Business.Posts.Queries.GetPostsByCategory;
 using Blog.Application.Business.Tags.Queries.GetTagsForPicker;
-using Blog.Domain.Responses;
+using Blog.Contracts.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +12,7 @@ namespace Blog.Presentation.Controllers;
 public class ClientController(IMediator mediator) : ControllerBase
 {
     [HttpPost("categories")]
-    public async Task<ActionResult<SearchAllCategoriesResponse>> GetAllCategoriesPosts(
+    public async Task<ActionResult<GetAllCategoriesPostsResponse>> GetAllCategoriesPosts(
         [FromBody] GetAllCategoriesPostsQuery query,
         CancellationToken cancellationToken
     )

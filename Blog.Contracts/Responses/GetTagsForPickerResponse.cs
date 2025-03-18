@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Blog.Domain.MaterializedView;
 
-namespace Blog.Domain.Responses;
+namespace Blog.Contracts.Responses;
 
 public record GetTagsForPickerResponse(
     [property: JsonPropertyName("selectedTags")]

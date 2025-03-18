@@ -1,6 +1,6 @@
 ﻿using Blog.Domain.DTOs;
 using Blog.Domain.Entities;
-using Blog.Domain.Interfaces.Repositories;
+using Blog.Contracts.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Repositories.Posts.Queries;

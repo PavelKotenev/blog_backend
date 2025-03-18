@@ -1,8 +1,6 @@
-﻿using Blog.Domain.MaterializedView;
-using Blog.Domain.Responses;
+﻿using Blog.Contracts.Responses;
 
-namespace Blog.Domain.Interfaces.Repositories;
-
+namespace Blog.Contracts.Interfaces.Repositories;
 public interface ITagRepositories
 {
     public interface IPostgresCommand
@@ -19,7 +17,7 @@ public interface ITagRepositories
         public Task<GetTagsForPickerResponse> GetTagsPickerTags(
             int? lastTagId,
             int? lastTagPopularity,
-            int[] tagsSelectedViaPreviewPosts,
+            int[]? tagsSelectedViaPreviewPosts,
             CancellationToken cancellationToken
         );
     }

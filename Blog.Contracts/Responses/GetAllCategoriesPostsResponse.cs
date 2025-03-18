@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Blog.Domain.Responses;
+namespace Blog.Contracts.Responses;
 
-public record SearchAllCategoriesResponse(
+public record GetAllCategoriesPostsResponse(
     [property: JsonPropertyName("total")] int Total,
     [property: JsonPropertyName("aggregations")]
     List<PostsCategoryAggregation> Aggregations
