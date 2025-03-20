@@ -1,4 +1,4 @@
-﻿using Blog.Application.Business.Posts.Queries.GetAllCategoriesPosts;
+﻿using Blog.Application.Business.Posts.Queries.CountPostsByCategories;
 using Blog.Application.Business.Posts.Queries.GetPostsByCategory;
 using Blog.Application.Business.Tags.Queries.GetTagsForPicker;
 using Blog.Contracts.Responses;
@@ -11,9 +11,9 @@ namespace Blog.Presentation.Controllers;
 [Route("api/client")]
 public class ClientController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("categories")]
-    public async Task<ActionResult<GetAllCategoriesPostsResponse>> GetAllCategoriesPosts(
-        [FromBody] GetAllCategoriesPostsQuery query,
+    [HttpPost("count")]
+    public async Task<ActionResult<CountPostsByCategoriesResponse>> CountPostsByCategories(
+        [FromBody] CountPostsByCategoriesQuery query,
         CancellationToken cancellationToken
     )
     {

@@ -2,9 +2,9 @@
 using Blog.Contracts.Responses;
 using MediatR;
 
-namespace Blog.Application.Business.Posts.Queries.GetAllCategoriesPosts;
+namespace Blog.Application.Business.Posts.Queries.CountPostsByCategories;
 
-public record GetAllCategoriesPostsQuery(
+public record CountPostsByCategoriesQuery(
     [property: JsonPropertyName("searchTerm")]
     string SearchTerm,
     [property: JsonPropertyName("fromCreatedAt")]
@@ -13,4 +13,4 @@ public record GetAllCategoriesPostsQuery(
     long? ToCreatedAt,
     [property: JsonPropertyName("selectedTags")]
     int[]? SelectedTags
-) : IRequest<GetAllCategoriesPostsResponse>;
+) : IRequest<CountPostsByCategoriesResponse>;

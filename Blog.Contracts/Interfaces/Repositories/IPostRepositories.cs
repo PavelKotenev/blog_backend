@@ -23,13 +23,13 @@ public interface IPostRepositories
 
     public interface IElasticQuery
     {
-        public Task<GetAllCategoriesPostsResponse> GetAllCategoriesPosts(
+        public Task<CountPostsByCategoriesResponse> CountPostsByCaterogies(
             string elasticQuery,
             CancellationToken cancellationToken
         );
 
 
-        public Task<GetPostsByCategoryResponse> GetCategoryPosts(
+        public Task<GetPostsByCategoryResponse> GetPostsByCategory(
             string elasticQuery,
             CancellationToken cancellationToken
         );

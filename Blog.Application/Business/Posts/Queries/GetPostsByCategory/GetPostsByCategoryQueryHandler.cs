@@ -15,7 +15,7 @@ public class GetPostsByCategoryQueryHandler(
     )
     {
         var elasticQuery = ElasticQueryBuilder
-            .BuildFilteredPostsQuery(
+            .BuildPostsByCategoryQuery(
                 query.Category,
                 query.SearchTerm,
                 query.FromCreatedAt,
@@ -25,7 +25,7 @@ public class GetPostsByCategoryQueryHandler(
                 query.SelectedTags
             );
         Console.WriteLine(elasticQuery);
-        return await repository.GetCategoryPosts(
+        return await repository.GetPostsByCategory(
             elasticQuery,
             cancellationToken
         );

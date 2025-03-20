@@ -5,41 +5,40 @@ namespace Blog.Infrastructure.Services;
 
 public class ElasticResponseMapper
 {
-    public static async Task<GetAllCategoriesPostsResponse> MapToAllCatgoriesPostsResponse(
+    public static async Task<CountPostsByCategoriesResponse> MapToCountPostsByCategoriesResponse(
         HttpResponseMessage response,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         var json = await response.Content.ReadAsStringAsync(cancellationToken);
         var doc = JsonDocument.Parse(json);
+        var aggregations = doc.RootElement.GetProperty("aggregations");
 
-        try
+        var totalByContent = 0;
+        var totalByTitle = 0;
+        var totalByTag = 0;
+        var totalById = 0;
+
+        if (aggregations.TryGetProperty("by_contents", out var byContentElement))
         {
-            var total = doc.RootElement.GetProperty("hits").GetProperty("total").GetProperty("value").GetInt32();
-
-            var aggregations = doc.RootElement.GetProperty("aggregations").EnumerateObject()
-                .Select(agg =>
-                {
-                    var category = agg.Name;
-                    var totalCount = agg.Value
-                        .GetProperty("top_posts")
-                        .GetProperty("hits")
-                        .GetProperty("total")
-                        .GetProperty("value")
-                        .GetInt32();
-
-                    var posts = ParsePreviewPosts(agg.Value.GetProperty("top_posts"), cancellationToken);
-
-                    return new PostsCategoryAggregation(category, totalCount, posts);
-                })
-                .ToList();
-
-            return new GetAllCategoriesPostsResponse(total, aggregations);
+            totalByContent = byContentElement.GetProperty("doc_count").GetInt32();
         }
-        catch (KeyNotFoundException)
+
+        if (aggregations.TryGetProperty("by_titles", out var byTitleElement))
         {
-            return new GetAllCategoriesPostsResponse(0, []);
+            totalByTitle = byTitleElement.GetProperty("doc_count").GetInt32();
         }
+
+        if (aggregations.TryGetProperty("by_tags", out var byTagElement))
+        {
+            totalByTag = byTagElement.GetProperty("doc_count").GetInt32();
+        }
+
+        if (aggregations.TryGetProperty("by_ids", out var byIdElement))
+        {
+            totalById = byIdElement.GetProperty("doc_count").GetInt32();
+        }
+
+        return new CountPostsByCategoriesResponse(totalById, totalByContent, totalByTitle, totalByTag);
     }
 
 
@@ -50,14 +49,22 @@ public class ElasticResponseMapper
     {
         var json = await response.Content.ReadAsStringAsync(cancellationToken);
         var doc = JsonDocument.Parse(json);
+        var rootElement = doc.RootElement;
 
-        var posts = ParsePreviewPosts(doc.RootElement, cancellationToken);
+        var total = rootElement.GetProperty("hits")
+            .GetProperty("total")
+            .GetProperty("value")
+            .GetInt32();
 
-        return new GetPostsByCategoryResponse(posts);
+        var posts = MapToPostsByCategory(rootElement, cancellationToken);
+
+        return new GetPostsByCategoryResponse(
+            Total: total,
+            PostsByCategory: posts
+        );
     }
 
-
-    private static List<PreviewPost> ParsePreviewPosts(
+    private static List<PreviewPost> MapToPostsByCategory(
         JsonElement rootElement,
         CancellationToken cancellationToken
     )
@@ -82,9 +89,13 @@ public class ElasticResponseMapper
             .ToList();
     }
 
-
     private static List<PreviewPostTag> MapToPreviewPostTags(string tagsString)
     {
+        if (string.IsNullOrEmpty(tagsString))
+        {
+            return new List<PreviewPostTag>();
+        }
+
         return tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(tagPair =>
             {

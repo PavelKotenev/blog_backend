@@ -21,7 +21,7 @@ public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositor
         var selectedTags = new List<MvTagsStatistics>();
         if (selectedTagIds?.Length > 0)
         {
-            const string selectedQuery = "SELECT id, title, posts_quantity, popularity, created_at FROM mv_tag_statistics WHERE id = ANY(:selectedIds)";
+            const string selectedQuery = "SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics WHERE id = ANY(:selectedIds)";
             var selectedParameters = new[] { new NpgsqlParameter("selectedIds", selectedTagIds) };
             
             selectedTags = await context.MvTagsStatistics
@@ -32,7 +32,7 @@ public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositor
         var suggestedQuery = new List<string>();
         var suggestedParameters = new List<NpgsqlParameter>();
 
-        suggestedQuery.Add("SELECT id, title, posts_quantity, popularity, created_at FROM mv_tag_statistics");
+        suggestedQuery.Add("SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics");
 
         if (lastTagId.HasValue && lastTagPopularity.HasValue)
         {
@@ -68,7 +68,7 @@ public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositor
 
     public async Task<List<MvTagsStatistics>> GetTagsForAdminTable(int? lastPostId, long? lastPostCreatedAt, CancellationToken cancellationToken)
     {
-        var query = "SELECT id, title, posts_quantity, popularity, created_at FROM mv_tag_statistics";
+        var query = "SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics";
 
         var parameters = new List<object>();
 

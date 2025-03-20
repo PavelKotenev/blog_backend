@@ -15,8 +15,7 @@ public class PostgresTagCommandRepository(PostgresContext context) : ITagReposit
                                  t_tags.title,
                                  COALESCE(COUNT(tag_id), 0) AS posts_quantity,
                                  COALESCE(DENSE_RANK() OVER (ORDER BY COUNT(tag_id) DESC),
-                                          (SELECT DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) FROM t_posts, jsonb_array_elements(tags::jsonb) AS tag_id) + 1) AS popularity,
-                                 t_tags.created_at
+                                          (SELECT DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) FROM t_posts, jsonb_array_elements(tags::jsonb) AS tag_id) + 1) AS popularity
                              FROM t_tags
                                       LEFT JOIN (SELECT tag_id FROM t_posts, jsonb_array_elements(tags::jsonb) AS tag_id) AS tags ON t_tags.id = tags.tag_id::integer
                              GROUP BY t_tags.id

@@ -9,7 +9,7 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
     private const string IndexName = "i_post";
 
 
-    public async Task<GetAllCategoriesPostsResponse> GetAllCategoriesPosts(
+    public async Task<CountPostsByCategoriesResponse> CountPostsByCaterogies(
         string elasticQuery,
         CancellationToken cancellationToken
     )
@@ -19,20 +19,20 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
             elasticQuery,
             cancellationToken
         );
-        return await ElasticResponseMapper.MapToAllCatgoriesPostsResponse(
+        return await ElasticResponseMapper.MapToCountPostsByCategoriesResponse(
             response,
             cancellationToken
         );
     }
 
 
-    public async Task<GetPostsByCategoryResponse> GetCategoryPosts(
+    public async Task<GetPostsByCategoryResponse> GetPostsByCategory(
         string elasticQuery,
         CancellationToken cancellationToken
     )
     {
         var response = await elasticHttpClient.PostAsync(
-            $"{IndexName}/_search?filter_path=hits.hits",
+            $"{IndexName}/_search",
             elasticQuery,
             cancellationToken
         );

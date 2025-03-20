@@ -4,6 +4,7 @@ using Blog.Domain.DTOs;
 namespace Blog.Contracts.Responses;
 
 public record GetPostsByCategoryResponse(
+    [property: JsonPropertyName("total")] int Total,
     [property: JsonPropertyName("postsByCategory")]
     List<PreviewPost> PostsByCategory
 );

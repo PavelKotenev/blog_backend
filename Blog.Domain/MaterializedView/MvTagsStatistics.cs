@@ -14,17 +14,12 @@ public class MvTagsStatistics
 
     [JsonPropertyName("popularity")] public int Popularity { get; set; }
 
-    [JsonPropertyName("createdAt")]
-    [Column("created_at")]
-    public long CreatedAt { get; set; }
-
-    public MvTagsStatistics(int id, string title, int postsQuantity, int popularity, long createdAt)
+    public MvTagsStatistics(int id, string title, int postsQuantity, int popularity)
     {
         Id = id;
         Title = title;
         PostsQuantity = postsQuantity;
         Popularity = popularity;
-        CreatedAt = createdAt;
     }
 
     public MvTagsStatistics()

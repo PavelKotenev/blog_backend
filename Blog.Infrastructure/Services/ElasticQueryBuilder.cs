@@ -58,7 +58,7 @@ public static class ElasticQueryBuilder
         return JsonSerializer.Serialize(jsonBody);
     }
 
-    public static string BuildFilteredPostsQuery(
+    public static string BuildPostsByCategoryQuery(
         string category,
         string? searchTerm,
         long? fromCreatedAt,
@@ -124,13 +124,16 @@ public static class ElasticQueryBuilder
             }
             else
             {
-                queryFilters.Add(new Dictionary<string, object>
+                if (category != "default")
                 {
-                    ["match"] = new Dictionary<string, object>
+                    queryFilters.Add(new Dictionary<string, object>
                     {
-                        [category] = searchTerm
-                    }
-                });
+                        ["match"] = new Dictionary<string, object>
+                        {
+                            [category] = searchTerm
+                        }
+                    });
+                }
             }
         }
 
@@ -173,11 +176,12 @@ public static class ElasticQueryBuilder
     }
 
 
-    public static string BuildPostsAggregationsQuery(
+    public static string BuildCountPostsByCategoryQuery(
         string queryTerm,
         long? fromCreatedAt,
         long? toCreatedAt,
-        int[]? selectedTags)
+        int[]? selectedTags
+    )
     {
         var shouldBlock = new List<object>();
         var aggregationsBlock = new Dictionary<string, object>();
@@ -233,53 +237,21 @@ public static class ElasticQueryBuilder
 
         shouldBlock.Add(new Dictionary<string, object>
             { ["match"] = new Dictionary<string, object> { ["content"] = queryTerm } });
-        aggregationsBlock["by_content"] = new Dictionary<string, object>
+        aggregationsBlock["by_contents"] = new Dictionary<string, object>
         {
             ["filter"] = new Dictionary<string, object>
             {
                 ["match"] = new Dictionary<string, object> { ["content"] = queryTerm }
-            },
-            ["aggs"] = new Dictionary<string, object>
-            {
-                ["top_posts"] = new Dictionary<string, object>
-                {
-                    ["top_hits"] = new Dictionary<string, object>
-                    {
-                        ["size"] = 10,
-                        ["_source"] = new[] { "id", "title", "content", "created_at", "tags" },
-                        ["sort"] = new List<object>
-                        {
-                            new Dictionary<string, object> { ["created_at"] = new { order = "desc" } },
-                            new Dictionary<string, object> { ["id"] = new { order = "desc" } }
-                        }
-                    }
-                }
             }
         };
 
         shouldBlock.Add(new Dictionary<string, object>
             { ["match"] = new Dictionary<string, object> { ["title"] = queryTerm } });
-        aggregationsBlock["by_title"] = new Dictionary<string, object>
+        aggregationsBlock["by_titles"] = new Dictionary<string, object>
         {
             ["filter"] = new Dictionary<string, object>
             {
                 ["match"] = new Dictionary<string, object> { ["title"] = queryTerm }
-            },
-            ["aggs"] = new Dictionary<string, object>
-            {
-                ["top_posts"] = new Dictionary<string, object>
-                {
-                    ["top_hits"] = new Dictionary<string, object>
-                    {
-                        ["size"] = 10,
-                        ["_source"] = new[] { "id", "title", "content", "created_at", "tags" },
-                        ["sort"] = new List<object>
-                        {
-                            new Dictionary<string, object> { ["created_at"] = new { order = "desc" } },
-                            new Dictionary<string, object> { ["id"] = new { order = "desc" } }
-                        }
-                    }
-                }
             }
         };
 
@@ -290,22 +262,6 @@ public static class ElasticQueryBuilder
             ["filter"] = new Dictionary<string, object>
             {
                 ["match"] = new Dictionary<string, object> { ["tags"] = queryTerm }
-            },
-            ["aggs"] = new Dictionary<string, object>
-            {
-                ["top_posts"] = new Dictionary<string, object>
-                {
-                    ["top_hits"] = new Dictionary<string, object>
-                    {
-                        ["size"] = 10,
-                        ["_source"] = new[] { "id", "title", "content", "created_at", "tags" },
-                        ["sort"] = new List<object>
-                        {
-                            new Dictionary<string, object> { ["created_at"] = new { order = "desc" } },
-                            new Dictionary<string, object> { ["id"] = new { order = "desc" } }
-                        }
-                    }
-                }
             }
         };
 
@@ -314,27 +270,11 @@ public static class ElasticQueryBuilder
             var ids = QueryStringAnalyzer.ExtractIds(queryTerm);
             shouldBlock.Add(new Dictionary<string, object>
                 { ["terms"] = new Dictionary<string, object> { ["id"] = ids } });
-            aggregationsBlock["by_id"] = new Dictionary<string, object>
+            aggregationsBlock["by_ids"] = new Dictionary<string, object>
             {
                 ["filter"] = new Dictionary<string, object>
                 {
                     ["terms"] = new Dictionary<string, object> { ["id"] = ids }
-                },
-                ["aggs"] = new Dictionary<string, object>
-                {
-                    ["top_posts"] = new Dictionary<string, object>
-                    {
-                        ["top_hits"] = new Dictionary<string, object>
-                        {
-                            ["size"] = 10,
-                            ["_source"] = new[] { "id", "title", "content", "created_at", "tags" },
-                            ["sort"] = new List<object>
-                            {
-                                new Dictionary<string, object> { ["created_at"] = new { order = "desc" } },
-                                new Dictionary<string, object> { ["id"] = new { order = "desc" } }
-                            }
-                        }
-                    }
                 }
             };
         }
@@ -347,6 +287,7 @@ public static class ElasticQueryBuilder
                 ["minimum_should_match"] = 1
             }
         };
+
         if (queryFilters.Count > 0)
         {
             queryBody["bool"] = new Dictionary<string, object>

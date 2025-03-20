@@ -18,11 +18,11 @@ public class RequestResponseLoggingBehavior<TRequest, TResponse>(
         var correlationId = Guid.NewGuid();
 
         var requestJson = JsonSerializer.Serialize(request);
-        logger.LogInformation("Handling request {CorrelationID}: {Request}", correlationId, requestJson);
+        //logger.LogInformation("Handling request {CorrelationID}: {Request}", correlationId, requestJson);
 
         var response = await next();
         var responseJson = JsonSerializer.Serialize(response);
-        logger.LogInformation("Response for {Correlation}: {Response}", correlationId, responseJson);
+        //logger.LogInformation("Response for {Correlation}: {Response}", correlationId, responseJson);
 
         return response;
     }

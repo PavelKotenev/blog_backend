@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 using FluentValidation;
 
-namespace Blog.Application.Business.Posts.Queries.GetPostsByCategory;
+namespace Blog.Application.Business.Posts.Queries.CountPostsByCategories;
 
-public partial class GetPostsByCategoryQueryValidator : AbstractValidator<GetPostsByCategoryQuery>
+public partial class CountPostsByCategoriesQueryValidator : AbstractValidator<CountPostsByCategoriesQuery>
 {
-    public GetPostsByCategoryQueryValidator()
+    public CountPostsByCategoriesQueryValidator()
     {
         RuleFor(x => x.SearchTerm)
             .Must(x =>
