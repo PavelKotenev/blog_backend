@@ -3,10 +3,12 @@ using Blog.Application.Behaviors;
 using Blog.Application.Exeptions;
 using Blog.Infrastructure;
 using Blog.Infrastructure.Services;
+using Blog.Presentation;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
@@ -26,16 +28,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
-
+builder.Services.AddCustomCors(builder.Configuration);
 
 var app = builder.Build();
 
@@ -45,8 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
-app.UseCors("AllowAll");
+app.UseCors(app.Environment.IsDevelopment() ? "DevPolicy" : "ProdPolicy");
 app.MapControllers();
 
 app.Run();
