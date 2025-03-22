@@ -26,8 +26,7 @@ namespace Blog.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
                     posts_quantity = table.Column<int>(type: "integer", nullable: false),
-                    Popularity = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<long>(type: "bigint", nullable: false)
+                    Popularity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,7 +45,7 @@ namespace Blog.Infrastructure.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     content = table.Column<string>(type: "text", nullable: true),
                     tags = table.Column<string>(type: "jsonb", nullable: false),
-                    created_at = table.Column<long>(type: "bigint", nullable: false)
+                    created_at = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) * 1000")
                 },
                 constraints: table =>
                 {
@@ -61,7 +60,7 @@ namespace Blog.Infrastructure.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<long>(type: "bigint", nullable: false)
+                    created_at = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) * 1000")
                 },
                 constraints: table =>
                 {
@@ -75,7 +74,6 @@ namespace Blog.Infrastructure.Migrations
                 {
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    handle = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     normalized_email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

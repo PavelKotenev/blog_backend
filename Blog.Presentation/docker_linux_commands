@@ -1,0 +1,14 @@
+создание контейнера
+docker build -t pavel5697/blog_backend:1.0.2 .
+
+запуск контейнера
+docker run --rm -it --entrypoint /bin/bash pavel5697/blog_backend:1.0.2
+
+выход из этого режима
+exit
+
+запуск композа
+docker-compose up -d
+
+стоп композа 
+docker compose down

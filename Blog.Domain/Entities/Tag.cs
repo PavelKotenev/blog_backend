@@ -4,7 +4,7 @@ public class Tag
 {
     public int Id { get; private set; }
     public required string Title { get; set; }
-    public required long CreatedAt { get; set; }
+    public long CreatedAt { get; set; }
 
     public Tag(int id, string title)
     {

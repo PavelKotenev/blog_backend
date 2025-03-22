@@ -60,12 +60,13 @@ public class PostgresTagCommandRepository(PostgresContext context) : ITagReposit
         var epochNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var defaultTags = new List<Domain.Entities.Tag>
         {
-            new() { Title = "c#", CreatedAt = epochNow },
-            new() { Title = ".net", CreatedAt = epochNow },
-            new() { Title = "typescript", CreatedAt = epochNow },
-            new() { Title = "elasticsearch", CreatedAt = epochNow },
-            new() { Title = "postgres", CreatedAt = epochNow },
-            new() { Title = "leetcode", CreatedAt = epochNow }
+            new() { Title = "welcome" },
+            new() { Title = "deploy" },
+            new() { Title = "c#" },
+            new() { Title = ".net" },
+            new() { Title = "typescript" },
+            new() { Title = "elasticsearch" },
+            new() { Title = "postgres" },
         };
         await context.Tag.AddRangeAsync(defaultTags, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);

@@ -85,8 +85,10 @@ namespace Blog.Infrastructure.Migrations
                         .HasColumnName("content");
 
                     b.Property<long>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) * 1000");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer")
@@ -117,7 +119,10 @@ namespace Blog.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<long>("CreatedAt")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) * 1000");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -200,12 +205,6 @@ namespace Blog.Infrastructure.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("two_factor_enabled");
 
-                    b.Property<string>("UserHandle")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("handle");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -225,11 +224,6 @@ namespace Blog.Infrastructure.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<long>("CreatedAt")
-                        .HasColumnType("bigint")
-                        .HasColumnName("created_at")
-                        .HasAnnotation("Relational:JsonPropertyName", "createdAt");
 
                     b.Property<int>("Popularity")
                         .HasColumnType("integer")
