@@ -6,6 +6,51 @@ namespace Blog.Infrastructure.Services;
 
 public static class ElasticQueryBuilder
 {
+    public static string BuildCreatePostIndexQuery()
+    {
+        var jsonBody = new
+        {
+            settings = new
+            {
+                index = new
+                {
+                    max_ngram_diff = 8
+                },
+                analysis = new
+                {
+                    analyzer = new
+                    {
+                        ngram_analyzer = new
+                        {
+                            tokenizer = "ngram_tokenizer"
+                        }
+                    },
+                    tokenizer = new
+                    {
+                        ngram_tokenizer = new
+                        {
+                            type = "ngram",
+                            min_gram = 3,
+                            max_gram = 10
+                        }
+                    }
+                }
+            },
+            mappings = new
+            {
+                properties = new
+                {
+                    id = new { type = "keyword" },
+                    title = new { type = "text", analyzer = "ngram_analyzer", search_analyzer = "ngram_analyzer", norms = false },
+                    content = new { type = "text", analyzer = "ngram_analyzer", search_analyzer = "ngram_analyzer", norms = false },
+                    created_at = new { type = "date", format = "epoch_millis" },
+                    tags = new { type = "text", analyzer = "ngram_analyzer", search_analyzer = "ngram_analyzer", norms = false }
+                }
+            }
+        };
+
+        return JsonSerializer.Serialize(jsonBody);
+    }
     public static string BuildBulkDeleteDocQuery(int[] docsIds)
     {
         var jsonBody = new

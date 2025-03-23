@@ -19,9 +19,7 @@ public class ElasticPostCommandRepository(ElasticHttpClient elasticHttpClient) :
 
 
     public async Task<HttpResponseMessage> CreatePostIndex(CancellationToken cancellationToken) {
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "../Blog.Infrastructure/i_post.json");
-        var jsonBody = await File.ReadAllTextAsync(filePath, cancellationToken);
-
+        var jsonBody = ElasticQueryBuilder.BuildCreatePostIndexQuery();
         return await elasticHttpClient.PutAsync(IndexName, jsonBody, cancellationToken);
     }
 
