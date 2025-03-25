@@ -99,7 +99,7 @@ public class ElasticResponseMapper
         return tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(tagPair =>
             {
-                var parts = tagPair.Split("$$");
+                var parts = tagPair.Split("$$", StringSplitOptions.RemoveEmptyEntries);
                 return parts.Length == 2 && int.TryParse(parts[0], out var tagId)
                     ? new PreviewPostTag(tagId, parts[1])
                     : null;

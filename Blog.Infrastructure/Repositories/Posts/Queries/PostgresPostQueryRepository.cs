@@ -45,7 +45,7 @@ public class PostgresPostQueryRepository(PostgresContext context) : IPostReposit
                                  p.title,
                                  p.content,
                                  p.created_at,
-                                 string_agg(t.id || '$$' || t.title, ',' ORDER BY t.id) AS tags
+                                 string_agg('$$' || t.id || '$$' || t.title, ',' ORDER BY t.id) AS tags
                              FROM
                                  public.t_posts p
                                      LEFT JOIN

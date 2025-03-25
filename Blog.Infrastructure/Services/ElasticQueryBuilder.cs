@@ -191,7 +191,7 @@ public static class ElasticQueryBuilder
                 {
                     ["wildcard"] = new Dictionary<string, object>
                     {
-                        ["tags"] = new { value = $"*{tagId}$$*" }
+                        ["tags"] = new { value = $"*$${tagId}$$*" }
                     }
                 });
             }
