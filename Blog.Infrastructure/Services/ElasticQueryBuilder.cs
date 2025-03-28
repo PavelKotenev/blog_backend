@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Blog.Domain.DTOs;
+using Blog.Domain.Enums;
 
 namespace Blog.Infrastructure.Services;
 
@@ -87,7 +88,7 @@ public static class ElasticQueryBuilder
         return sb.ToString();
     }
 
-    public static string BuildDeletePostByIdQuery(long id)
+    public static string BuildDeletePostByIdQuery(int id)
     {
         var jsonBody = new Dictionary<string, object>
         {
@@ -104,11 +105,11 @@ public static class ElasticQueryBuilder
     }
 
     public static string BuildPostsByCategoryQuery(
-        string category,
+        SearchCategories category,
         string? searchTerm,
         long? fromCreatedAt,
         long? toCreatedAt,
-        long? lastPostId,
+        int? lastPostId,
         long? lastPostCreatedAt,
         int[]? selectedTags
     )
@@ -156,7 +157,7 @@ public static class ElasticQueryBuilder
         if (!string.IsNullOrEmpty(searchTerm))
         {
             var isSearchByIdAvailable = QueryStringAnalyzer.IsSearchByIdAvailable(searchTerm);
-            if (category == "id" && isSearchByIdAvailable)
+            if (category == SearchCategories.Id && isSearchByIdAvailable)
             {
                 var ids = QueryStringAnalyzer.ExtractIds(searchTerm);
                 queryFilters.Add(new Dictionary<string, object>
@@ -169,13 +170,13 @@ public static class ElasticQueryBuilder
             }
             else
             {
-                if (category != "default")
+                if (category != SearchCategories.All)
                 {
                     queryFilters.Add(new Dictionary<string, object>
                     {
                         ["match"] = new Dictionary<string, object>
                         {
-                            [category] = searchTerm
+                            ["all"] = searchTerm
                         }
                     });
                 }

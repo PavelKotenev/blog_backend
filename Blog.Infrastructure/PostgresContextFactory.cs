@@ -8,9 +8,11 @@ public class PostgresContextFactory : IDesignTimeDbContextFactory<PostgresContex
 {
     public PostgresContext CreateDbContext(string[] args)
     {
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../Blog.Presentation"))
-            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .Build();
 
         var optionsBuilder = new DbContextOptionsBuilder<PostgresContext>();

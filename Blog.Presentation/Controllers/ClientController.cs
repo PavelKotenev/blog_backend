@@ -11,7 +11,7 @@ namespace Blog.Presentation.Controllers;
 [Route("api/client")]
 public class ClientController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("count")]
+    [HttpPost("post/count")]
     public async Task<ActionResult<CountPostsByCategoriesResponse>> CountPostsByCategories(
         [FromBody] CountPostsByCategoriesQuery query,
         CancellationToken cancellationToken
@@ -20,7 +20,7 @@ public class ClientController(IMediator mediator) : ControllerBase
         return await mediator.Send(query, cancellationToken);
     }
 
-    [HttpPost("category")]
+    [HttpPost("post/by_category")]
     public async Task<ActionResult<GetPostsByCategoryResponse>> GetPostsByCategory(
         [FromBody] GetPostsByCategoryQuery query,
         CancellationToken cancellationToken
@@ -29,7 +29,7 @@ public class ClientController(IMediator mediator) : ControllerBase
         return await mediator.Send(query, cancellationToken);
     }
 
-    [HttpPost("picker/tags")]
+    [HttpPost("tags/refresh_picker")]
     public async Task<ActionResult<GetTagsForPickerResponse>> GetTagsForPicker(
         [FromBody] GetTagsForPickerQuery query,
         CancellationToken cancellationToken

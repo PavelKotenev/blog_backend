@@ -64,7 +64,7 @@ public class ElasticResponseMapper
         );
     }
 
-    private static List<PreviewPost> MapToPostsByCategory(
+    private static List<PostByCategory> MapToPostsByCategory(
         JsonElement rootElement,
         CancellationToken cancellationToken
     )
@@ -78,8 +78,8 @@ public class ElasticResponseMapper
 
                 var source = hit.GetProperty("_source");
 
-                return new PreviewPost(
-                    Id: source.GetProperty("id").GetInt64(),
+                return new PostByCategory(
+                    Id: source.GetProperty("id").GetInt32(),
                     Title: source.GetProperty("title").GetString() ?? string.Empty,
                     Content: source.GetProperty("content").GetString() ?? string.Empty,
                     Tags: MapToPreviewPostTags(source.GetProperty("tags").GetString() ?? string.Empty),
@@ -89,11 +89,11 @@ public class ElasticResponseMapper
             .ToList();
     }
 
-    private static List<PreviewPostTag> MapToPreviewPostTags(string tagsString)
+    private static List<PostByCategoryTag> MapToPreviewPostTags(string tagsString)
     {
         if (string.IsNullOrEmpty(tagsString))
         {
-            return new List<PreviewPostTag>();
+            return new List<PostByCategoryTag>();
         }
 
         return tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -101,7 +101,7 @@ public class ElasticResponseMapper
             {
                 var parts = tagPair.Split("$$", StringSplitOptions.RemoveEmptyEntries);
                 return parts.Length == 2 && int.TryParse(parts[0], out var tagId)
-                    ? new PreviewPostTag(tagId, parts[1])
+                    ? new PostByCategoryTag(tagId, parts[1])
                     : null;
             })
             .Where(tag => tag != null)

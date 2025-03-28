@@ -1,12 +1,13 @@
 using System.Text.Json.Serialization;
 using Blog.Contracts.Responses;
+using Blog.Domain.Enums;
 using MediatR;
 
 namespace Blog.Application.Business.Posts.Queries.GetPostsByCategory;
 
 public record GetPostsByCategoryQuery(
     [property: JsonPropertyName("category")]
-    string Category,
+    SearchCategories Category,
     [property: JsonPropertyName("searchTerm")]
     string? SearchTerm,
     [property: JsonPropertyName("fromCreatedAt")]
@@ -14,7 +15,7 @@ public record GetPostsByCategoryQuery(
     [property: JsonPropertyName("toCreatedAt")]
     long? ToCreatedAt,
     [property: JsonPropertyName("lastPostId")]
-    long? LastPostId,
+    int? LastPostId,
     [property: JsonPropertyName("lastPostCreatedAt")]
     long? LastPostCreatedAt,
     [property: JsonPropertyName("selectedTags")]

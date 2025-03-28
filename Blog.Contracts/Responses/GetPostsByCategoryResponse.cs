@@ -6,20 +6,20 @@ namespace Blog.Contracts.Responses;
 public record GetPostsByCategoryResponse(
     [property: JsonPropertyName("total")] int Total,
     [property: JsonPropertyName("postsByCategory")]
-    List<PreviewPost> PostsByCategory
+    List<PostByCategory> PostsByCategory
 );
 
-public record PreviewPost(
-    [property: JsonPropertyName("id")] long Id,
+public record PostByCategory(
+    [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("title")] string Title,
     [property: JsonPropertyName("content")]
     string Content,
-    [property: JsonPropertyName("tags")] List<PreviewPostTag> Tags,
+    [property: JsonPropertyName("tags")] List<PostByCategoryTag> Tags,
     [property: JsonPropertyName("createdAt")]
     long CreatedAt
 );
 
-public record PreviewPostTag(
+public record PostByCategoryTag(
     [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("title")] string Title
 );

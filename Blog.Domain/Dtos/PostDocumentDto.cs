@@ -7,7 +7,7 @@ public class PostDocumentDto
 {
     [Column("id")]
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     [Column("title")]
     [JsonPropertyName("title")]
