@@ -9,7 +9,7 @@ public class ElasticPostQueryRepository(ElasticHttpClient elasticHttpClient) : I
     private const string IndexName = "i_post";
 
 
-    public async Task<CountPostsByCategoriesResponse> CountPostsByCaterogies(
+    public async Task<CountPostsByCategoriesResponse> CountPostsByCategories(
         string elasticQuery,
         CancellationToken cancellationToken
     )

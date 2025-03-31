@@ -19,21 +19,6 @@ namespace Blog.Infrastructure.Migrations
                 name: "auth");
 
             migrationBuilder.CreateTable(
-                name: "MvTagsStatistics",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    posts_quantity = table.Column<int>(type: "integer", nullable: false),
-                    Popularity = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MvTagsStatistics", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "t_posts",
                 schema: "public",
                 columns: table => new
@@ -129,9 +114,6 @@ namespace Blog.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "MvTagsStatistics");
-
             migrationBuilder.DropTable(
                 name: "t_pictures",
                 schema: "public");

@@ -9,7 +9,7 @@ namespace Blog.Application.Manage.Posts.Commands.CreatePostIndex
     {
         public async Task<Unit> Handle(CreatePostIndexCommand command, CancellationToken cancellationToken)
         {
-            await repository.CreatePostIndex(cancellationToken);
+            await repository.CreateIndex(cancellationToken);
             return Unit.Value;
         }
     }

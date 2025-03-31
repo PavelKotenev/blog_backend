@@ -31,8 +31,7 @@ packages/
 *.snupkg
 
 # Файлы конфигурации с секретами
-appsettings.json
-appsettings.*.json
+appsettings.Production.json
 *.config
 *.secrets.json
 

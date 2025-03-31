@@ -1,5 +1,4 @@
 ﻿using Blog.Domain.Entities;
-using Blog.Domain.MaterializedView;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure
@@ -10,8 +9,6 @@ namespace Blog.Infrastructure
         public DbSet<User> User { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<Picture> Picture { get; set; }
-        public DbSet<MvTagsStatistics> MvTagsStatistics { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Picture>(entity =>

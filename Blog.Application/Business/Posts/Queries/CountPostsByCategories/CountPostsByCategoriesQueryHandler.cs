@@ -20,6 +20,6 @@ public class CountPostsByCategoriesQueryHandler(
             byCategoriesQuery.ToCreatedAt,
             byCategoriesQuery.SelectedTags
             );
-        return await queryRepository.CountPostsByCaterogies(elasticQuery, cancellationToken);
+        return await queryRepository.CountPostsByCategories(elasticQuery, cancellationToken);
     }
 }

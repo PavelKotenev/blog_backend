@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Blog.Infrastructure.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    [Migration("20250327194437_Init")]
+    [Migration("20250330124903_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -217,34 +217,6 @@ namespace Blog.Infrastructure.Migrations
                     b.HasKey("Guid");
 
                     b.ToTable("t_users", "auth");
-                });
-
-            modelBuilder.Entity("Blog.Domain.MaterializedView.MvTagsStatistics", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Popularity")
-                        .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "popularity");
-
-                    b.Property<int>("PostsQuantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("posts_quantity")
-                        .HasAnnotation("Relational:JsonPropertyName", "postsQuantity");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "title");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MvTagsStatistics");
                 });
 
             modelBuilder.Entity("Blog.Domain.Entities.Picture", b =>

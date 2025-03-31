@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Blog.Domain.DTOs;
+using Blog.Domain.DTOs.Post;
 using Blog.Domain.Enums;
 
 namespace Blog.Infrastructure.Services;
@@ -52,20 +53,51 @@ public static class ElasticQueryBuilder
 
         return JsonSerializer.Serialize(jsonBody);
     }
-    public static string BuildBulkDeleteDocQuery(int[] docsIds)
+    public static string BuildBulkDeleteQuery(int[] ids)
     {
-        var jsonBody = new
-        {
-            query = new
-            {
-                terms = new
-                {
-                    id = docsIds
-                }
-            }
-        };
-        return JsonSerializer.Serialize(jsonBody);
+        var idsArray = $"[{string.Join(", ", ids)}]";
+        return $$"""
+                 {
+                     "query": {
+                         "terms": {
+                             "_id": {{idsArray}}
+                         }
+                     }
+                 }
+                 """;
     }
+
+    public static string BuildBulkUpdateQuery(List<UpdatePostDto> posts)
+    {
+        var sb = new StringBuilder();
+    
+        foreach (var post in posts)
+        {
+            var updateOperation = new { update = new { _id = post.Id } };
+            sb.AppendLine(JsonSerializer.Serialize(updateOperation));
+        
+            var updateFields = new Dictionary<string, object>();
+        
+            if (!string.IsNullOrEmpty(post.Title))
+                updateFields["title"] = post.Title;
+        
+            if (!string.IsNullOrEmpty(post.Content))
+                updateFields["content"] = post.Content;
+        
+            if (post.Status.HasValue)
+                updateFields["status"] = post.Status.Value;
+        
+            if (!string.IsNullOrEmpty(post.Tags))
+                updateFields["tags"] = post.Tags;
+        
+            var updateBody = new { doc = updateFields };
+            sb.AppendLine(JsonSerializer.Serialize(updateBody));
+        }
+    
+        sb.AppendLine();
+        return sb.ToString();
+    }
+
 
     public static string BuildBulkCreateQuery(List<PostDocumentDto> dtos)
     {
@@ -176,7 +208,7 @@ public static class ElasticQueryBuilder
                     {
                         ["match"] = new Dictionary<string, object>
                         {
-                            ["all"] = searchTerm
+                            [category.GetCategoryName()] = searchTerm
                         }
                     });
                 }

@@ -24,6 +24,7 @@ public class GetPostsByCategoryQueryHandler(
                 query.LastPostCreatedAt,
                 query.SelectedTags
             );
+        Console.WriteLine($"Query: {elasticQuery}");
         return await repository.GetPostsByCategory(
             elasticQuery,
             cancellationToken

@@ -1,5 +1,9 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 
 namespace Blog.Application.Manage.Posts.Commands.GenerateFakePosts;
 
-public record GenerateFakePostsCommand(int Quantity) : IRequest<Unit>;
+public record GenerateFakePostsCommand(
+    [property: JsonPropertyName("quantity")]
+    int Quantity
+) : IRequest<Unit>;

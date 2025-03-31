@@ -25,6 +25,11 @@ public class PostgresTagCommandRepository(PostgresContext context) : ITagReposit
         await context.Database.ExecuteSqlRawAsync(query, cancellationToken);
     }
 
+    public Task Update(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task RefreshMvTagStatistics(CancellationToken cancellationToken)
     {
         await context.Database.ExecuteSqlRawAsync(
@@ -52,23 +57,5 @@ public class PostgresTagCommandRepository(PostgresContext context) : ITagReposit
         await context.Tag
             .Where(p => ids.Contains(p.Id))
             .ExecuteDeleteAsync(cancellationToken);
-    }
-
-
-    public async Task CreateDefaultTags(CancellationToken cancellationToken)
-    {
-        var epochNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var defaultTags = new List<Domain.Entities.Tag>
-        {
-            new() { Title = "welcome" },
-            new() { Title = "deploy" },
-            new() { Title = "c#" },
-            new() { Title = ".net" },
-            new() { Title = "typescript" },
-            new() { Title = "elasticsearch" },
-            new() { Title = "postgres" },
-        };
-        await context.Tag.AddRangeAsync(defaultTags, cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -12,6 +12,11 @@ public class Post
     public string? Tags { get; init; }
     public long CreatedAt { get; init; }
 
+    public Post(int id)
+    {
+        Id = id;
+    }
+
     public Post(string title, string content)
     {
         Title = title;

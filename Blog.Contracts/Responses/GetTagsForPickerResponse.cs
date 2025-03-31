@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
-using Blog.Domain.MaterializedView;
+using Blog.Domain.DTOs.MvTagsStatistics;
 
 namespace Blog.Contracts.Responses;
 
 public record GetTagsForPickerResponse(
     [property: JsonPropertyName("selectedTags")]
-    List<MvTagsStatistics> SelectedTags,
+    List<MvTagsStatisticsDto> SelectedTags,
     [property: JsonPropertyName("suggestedTagsBatch")]
-    List<MvTagsStatistics> SuggestedTagsBatch
+    List<MvTagsStatisticsDto> SuggestedTagsBatch
 );

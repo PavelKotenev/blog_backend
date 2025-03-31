@@ -10,8 +10,8 @@ namespace Blog.Application.Manage.Posts.Commands.GenerateFakePosts
     {
         public async Task<Unit> Handle(GenerateFakePostsCommand command, CancellationToken cancellationToken)
         {
-            var postsEntities = FakerService.CreateFakePosts(command.Quantity);
-            await repository.BulkCreate(postsEntities, cancellationToken);
+            var createPostDtos = FakerService.CreateFakePosts(command.Quantity);
+            await repository.BulkCreate(createPostDtos, cancellationToken);
             return Unit.Value;
         }
     }

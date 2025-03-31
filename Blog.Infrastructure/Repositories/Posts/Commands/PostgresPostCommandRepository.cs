@@ -1,37 +1,43 @@
 ﻿using System.Text;
-using Blog.Domain.DTOs;
-using Blog.Domain.Entities;
 using Blog.Contracts.Interfaces.Repositories;
+using Blog.Domain.DTOs.Post;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Repositories.Posts.Commands;
 
 public class PostgresPostCommandRepository(PostgresContext context) : IPostRepositories.IPostgresCommand
 {
-    public async Task BulkCreate(
-        IEnumerable<PostDto> posts,
-        CancellationToken cancellationToken = default
-    )
+    public async Task<int[]> BulkCreate(
+        List<CreatePostDto> posts,
+        CancellationToken cancellationToken = default)
     {
         var postDtos = posts.ToList();
         if (postDtos.Count == 0)
-            return;
+            return [];
 
         var sql = new StringBuilder(
-            "INSERT INTO t_posts (author_id, title, content, status, tags, created_at) VALUES ");
-        var values = (from post in postDtos
-            let authorId = post.AuthorId
-            let title = post.Title.Replace("'", "''")
-            let content = post.Content
-            let status = post.Status
-            let tags = post.Tags
-            let createdAt = post.CreatedAt
-            select $"('{authorId}', '{title}', {content}, {status}, '{tags}', {createdAt})").ToList();
+            "INSERT INTO t_posts (author_id, title, content, status, tags) VALUES ");
+
+        var values = new List<string>();
+        foreach (var post in postDtos)
+        {
+            var authorId = post.AuthorId;
+            var title = post.Title.Replace("'", "''");
+            var content = post.Content.Replace("'", "''");
+            var status = (int)post.Status;
+            var tags = post.Tags.Replace("'", "''");
+
+            values.Add($"('{authorId}', '{title}', '{content}', {status}, '{tags}')");
+        }
 
         sql.Append(string.Join(", ", values));
-        sql.Append(';');
+        sql.Append(" RETURNING id;");
 
-        await context.Database.ExecuteSqlRawAsync(sql.ToString(), cancellationToken);
+        var createdIds = await context.Database
+            .SqlQueryRaw<int>(sql.ToString())
+            .ToArrayAsync(cancellationToken);
+
+        return createdIds;
     }
 
     public async Task BulkDelete(
@@ -47,23 +53,42 @@ public class PostgresPostCommandRepository(PostgresContext context) : IPostRepos
             .ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task Create(
-        PostDto post,
-        CancellationToken cancellationToken
-    )
+    public async Task BulkUpdate(List<UpdatePostDto> posts, CancellationToken cancellationToken)
     {
-        if (post == null)
-            throw new ArgumentNullException(nameof(post));
+        var sql = new StringBuilder("UPDATE t_posts SET ");
 
-        var postEntity = new Post(
-            post.AuthorId,
-            post.Status,
-            post.Title,
-            post.Content,
-            post.Tags
-        );
+        var updateFields = new List<string>();
 
-        context.Post.Add(postEntity);
-        await context.SaveChangesAsync(cancellationToken);
+        if (posts.Any(p => p.Title is not null))
+            updateFields.Add("title = CASE id " +
+                             string.Join(" ", posts.Where(p => p.Title is not null)
+                                 .Select(p => $"WHEN {p.Id} THEN '{p.Title!.Replace("'", "''")}'")) +
+                             " END");
+
+        if (posts.Any(p => p.Content is not null))
+            updateFields.Add("content = CASE id " +
+                             string.Join(" ", posts.Where(p => p.Content is not null)
+                                 .Select(p => $"WHEN {p.Id} THEN '{p.Content!.Replace("'", "''")}'")) +
+                             " END");
+
+        if (posts.Any(p => p.Status.HasValue))
+            updateFields.Add("status = CASE id " +
+                             string.Join(" ", posts.Where(p => p.Status.HasValue)
+                                 .Select(p => $"WHEN {p.Id} THEN {p.Status!.Value}")) +
+                             " END");
+
+        if (posts.Any(p => p.Tags is not null))
+            updateFields.Add("tags = CASE id " +
+                             string.Join(" ", posts.Where(p => p.Tags is not null)
+                                 .Select(p => $"WHEN {p.Id} THEN '{p.Tags!.Replace("'", "''")}'")) +
+                             " END");
+
+        if (updateFields.Count == 0)
+            return;
+
+        sql.Append(string.Join(", ", updateFields));
+        sql.Append($" WHERE id IN ({string.Join(", ", posts.Select(p => p.Id))});");
+
+        await context.Database.ExecuteSqlRawAsync(sql.ToString(), cancellationToken);
     }
 }

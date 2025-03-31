@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace Blog.Domain.DTOs;
+namespace Blog.Domain.DTOs.Post;
 
 public class PostDocumentDto
 {

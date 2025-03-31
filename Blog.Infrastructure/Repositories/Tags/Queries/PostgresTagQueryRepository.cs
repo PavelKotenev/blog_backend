@@ -1,6 +1,6 @@
 using Blog.Contracts.Interfaces.Repositories;
-using Blog.Domain.MaterializedView;
 using Blog.Contracts.Responses;
+using Blog.Domain.DTOs.MvTagsStatistics;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -12,33 +12,30 @@ public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositor
         string? searchTerm,
         int? lastTagId,
         int? lastTagPopularity,
-        int[] selectedTagIds,
-        CancellationToken cancellationToken
-    )
+        int[]? selectedTagIds,
+        CancellationToken cancellationToken)
     {
-        var selectedTagIdsString = selectedTagIds != null ? string.Join(", ", selectedTagIds) : "null";
+        var selectedTags = new List<MvTagsStatisticsDto>();
+        var suggestedTagsBatch = new List<MvTagsStatisticsDto>();
 
-        var selectedTags = new List<MvTagsStatistics>();
         if (selectedTagIds?.Length > 0)
         {
-            const string selectedQuery = "SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics WHERE id = ANY(:selectedIds)";
-            var selectedParameters = new[] { new NpgsqlParameter("selectedIds", selectedTagIds) };
-            
-            selectedTags = await context.MvTagsStatistics
-                .FromSqlRaw(selectedQuery, selectedParameters)
+            const string selectedQuery =
+                "SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics WHERE id = ANY(:selectedIds)";
+
+            selectedTags = await context.Database
+                .SqlQueryRaw<MvTagsStatisticsDto>(selectedQuery, new NpgsqlParameter("selectedIds", selectedTagIds))
                 .ToListAsync(cancellationToken);
         }
 
-        var suggestedQuery = new List<string>();
-        var suggestedParameters = new List<NpgsqlParameter>();
-
-        suggestedQuery.Add("SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics");
+        var suggestedQuery = new List<string> { "SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics" };
+        var suggestedParameters = new List<object>();
 
         if (lastTagId.HasValue && lastTagPopularity.HasValue)
         {
-            suggestedQuery.Add("WHERE (popularity > @p0 OR (popularity = @p0 AND id > @p1))");
-            suggestedParameters.Add(new NpgsqlParameter("@p0", lastTagPopularity.Value));
-            suggestedParameters.Add(new NpgsqlParameter("@p1", lastTagId.Value));
+            suggestedQuery.Add("WHERE (popularity > {0} OR (popularity = {0} AND id > {1}))");
+            suggestedParameters.Add(lastTagPopularity.Value);
+            suggestedParameters.Add(lastTagId.Value);
 
             if (selectedTagIds?.Length > 0)
             {
@@ -56,8 +53,8 @@ public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositor
 
         var finalSuggestedQuery = string.Join(" ", suggestedQuery);
 
-        var suggestedTagsBatch = await context.MvTagsStatistics
-            .FromSqlRaw(finalSuggestedQuery, suggestedParameters.ToArray())
+        suggestedTagsBatch = await context.Database
+            .SqlQueryRaw<MvTagsStatisticsDto>(finalSuggestedQuery, suggestedParameters.ToArray())
             .ToListAsync(cancellationToken);
 
         return new GetTagsForPickerResponse(
@@ -66,23 +63,26 @@ public class PostgresTagQueryRepository(PostgresContext context) : ITagRepositor
         );
     }
 
-    public async Task<List<MvTagsStatistics>> GetTagsForAdminTable(int? lastPostId, long? lastPostCreatedAt, CancellationToken cancellationToken)
+    public async Task<List<MvTagsStatisticsDto>> GetTagsForAdminTable(
+        int? lastPostId,
+        long? lastPostCreatedAt,
+        CancellationToken cancellationToken)
     {
         var query = "SELECT id, title, posts_quantity, popularity FROM mv_tag_statistics";
-
         var parameters = new List<object>();
 
         if (lastPostId.HasValue && lastPostCreatedAt.HasValue)
         {
-            query += " WHERE created_at > @p0 AND id > @p1";
+            // Предполагаю, что created_at есть в таблице, хотя в DTO его нет
+            query += " WHERE created_at > {0} AND id > {1}";
             parameters.Add(lastPostCreatedAt.Value);
             parameters.Add(lastPostId.Value);
         }
 
-        query += " ORDER BY popularity ASC LIMIT 20;";
+        query += " ORDER BY popularity ASC LIMIT 20";
 
-        var result = await context.MvTagsStatistics
-            .FromSqlRaw(query)
+        var result = await context.Database
+            .SqlQueryRaw<MvTagsStatisticsDto>(query, parameters.ToArray())
             .ToListAsync(cancellationToken);
 
         return result;
