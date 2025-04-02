@@ -23,9 +23,9 @@ COPY ./Blog.Domain ./Blog.Domain/
 COPY ./Blog.Infrastructure ./Blog.Infrastructure/
 COPY ./Blog.Presentation ./Blog.Presentation/
 
-# Проверяем, что appsettings.json скопировался
+# Проверяем, что appsettings.Production.json скопировался
 RUN ls -la /app/Blog.Presentation
-RUN cat /app/Blog.Presentation/appsettings.json
+RUN cat /app/Blog.Presentation/appsettings.Production.json
 
 # Публикуем приложение
 WORKDIR /app/Blog.Presentation
@@ -43,8 +43,8 @@ COPY --from=build-env /app/Blog.Contracts /app/Blog.Contracts/
 COPY --from=build-env /app/Blog.Domain /app/Blog.Domain/
 COPY --from=build-env /app/Blog.Infrastructure /app/Blog.Infrastructure/
 COPY --from=build-env /app/Blog.Presentation /app/Blog.Presentation/
-# Копируем appsettings.json и appsettings.Production.json
-COPY --from=build-env /app/Blog.Presentation/appsettings.json ./
+# Копируем appsettings.Production.json
+COPY --from=build-env /app/Blog.Presentation/appsettings.Production.json ./
 
 # Устанавливаем dotnet-ef в итоговый образ
 RUN dotnet tool install --global dotnet-ef
